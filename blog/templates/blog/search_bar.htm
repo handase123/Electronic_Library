@@ -1,0 +1,45 @@
+{% extends "blog/base.htm" %}
+
+{% block content %}
+
+    {% if page_obj.paginator.count %}
+        {% for post in posts %}
+
+        <article dir="rtl" class="media content-section">
+            <div class="media-body">
+            <div class="article-metadata">
+                <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+            <h6 dir="ltr">Category : <a class="article-title" href="{% url 'post-cat' post.category.id %}">{{ post.category.category_name }}</a></h6>
+            <p class="article-content">{{ post.content }}</p>
+            <a href="{{ post.book }}">Link here</a>
+            </div>
+        </article>
+
+        {% endfor %}
+
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-info mb-5" href="?page=1">First Page</a>
+                <a class="btn btn-outline-info mb-5" href="?page={{ page_obj.previous_page_number }}">Previous Page</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a class="btn btn-info mb-5 " href="?page={{ num }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-info mb-5" href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-info mb-5" href="?page={{ page_obj.next_page_number }}">Next Page</a>
+                <a class="btn btn-outline-info mb-5" href="?page={{ page_obj.paginator.num_pages }}">Last Page</a>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <h1>Your Search is not found.</h1>
+    {% endif %}
+
+{% endblock content %}
